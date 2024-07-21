@@ -19,9 +19,12 @@ def install_requirements():
 
 class Downloader:
     def __init__(self):
+        self.video_folder = 'videos'
+        if not os.path.exists(self.video_folder):
+            os.makedirs(self.video_folder)
         self.ydl_opts = {
             'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-            'outtmpl': '%(title)s.%(ext)s',
+            'outtmpl': os.path.join(self.video_folder, '%(title)s.%(ext)s'),
             'ffmpeg_location': 'C:/ffmpeg/ffmpeg-7.0.1-essentials_build/bin/ffmpeg.exe'  # Chemin absolu vers ffmpeg
         }
 
@@ -74,7 +77,10 @@ class Converter:
             stream = ffmpeg.output(stream, output_file, vcodec='libx264', acodec='aac')
             ffmpeg.run(stream)
             return True
-        except ffmpeg.Error as e:
+        except ffmpeg.Error as e:  # Utilisez la bonne exception du module ffmpeg-python
+            logger.error(f"An error occurred during conversion: {str(e)}", exc_info=True)
+            return False
+        except Exception as e:
             logger.error(f"An error occurred during conversion: {str(e)}", exc_info=True)
             return False
 
@@ -89,9 +95,12 @@ class BasePlatform(ABC):
 
 class YouTube(BasePlatform):
     def __init__(self):
+        self.video_folder = 'videos'
+        if not os.path.exists(self.video_folder):
+            os.makedirs(self.video_folder)
         self.ydl_opts = {
             'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-            'outtmpl': '%(title)s.%(ext)s',
+            'outtmpl': os.path.join(self.video_folder, '%(title)s.%(ext)s'),
             'ffmpeg_location': 'C:/ffmpeg/ffmpeg-7.0.1-essentials_build/bin/ffmpeg.exe'  # Chemin absolu vers ffmpeg
         }
 
@@ -117,8 +126,8 @@ def main():
         convert = input("Do you want to convert the video to MP4? (yes/no): ")
         if convert.lower() == 'yes':
             converter = Converter()
-            input_file = f"{title}.mp4"
-            output_file = f"{title}_converted.mp4"
+            input_file = f"videos/{title}.mp4"
+            output_file = f"videos/{title}_converted.mp4"
             if converter.convert_to_mp4(input_file, output_file):
                 print(f"Video converted successfully: {output_file}")
             else:

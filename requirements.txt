@@ -2,4 +2,3 @@ yt-dlp
 ffmpeg-python
 beautifulsoup4
 requests
-ffmpeg
