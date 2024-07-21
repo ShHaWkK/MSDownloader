@@ -10,6 +10,8 @@ from abc import ABC, abstractmethod
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+
+####### Install dependencies #######
 def install_requirements():
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
@@ -17,6 +19,8 @@ def install_requirements():
         logger.error(f"Failed to install dependencies: {str(e)}")
         sys.exit("Please ensure you have an active internet connection and try again.")
 
+
+####### Download and convert video #######
 class Downloader:
     def __init__(self):
         self.video_folder = 'videos'
@@ -53,6 +57,7 @@ class Downloader:
             logger.error(f"An error occurred: {str(e)}", exc_info=True)
             return None
 
+
     def get_available_qualities(self, url):
         try:
             with yt_dlp.YoutubeDL({'format': 'bestvideo'}) as ydl:
@@ -66,7 +71,8 @@ class Downloader:
         except Exception as e:
             logger.error(f"An error occurred while fetching qualities: {str(e)}", exc_info=True)
             return []
-
+        
+######### Convert video #########
 class Converter:
     def __init__(self):
         pass
@@ -84,6 +90,8 @@ class Converter:
             logger.error(f"An error occurred during conversion: {str(e)}", exc_info=True)
             return False
 
+######### Base platform class #########
+
 class BasePlatform(ABC):
     @abstractmethod
     def get_video_info(self, url):
@@ -92,6 +100,9 @@ class BasePlatform(ABC):
     @abstractmethod
     def download(self, url, quality='best'):
         pass
+
+
+######### YouTube class #########
 
 class YouTube(BasePlatform):
     def __init__(self):
@@ -113,6 +124,9 @@ class YouTube(BasePlatform):
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             return ydl.download([url])
 
+
+######### Main function #########
+
 def main():
     install_requirements()
 
@@ -121,6 +135,8 @@ def main():
     downloader = Downloader()
     title = downloader.download(url, quality=quality)
     
+    ######### Convert video ######### 
+    ### Convert video to MP4 ###
     if title:
         print(f"Downloaded video: {title}")
         convert = input("Do you want to convert the video to MP4? (yes/no): ")
