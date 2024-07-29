@@ -29,7 +29,7 @@ class Downloader:
         self.ydl_opts = {
             'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
             'outtmpl': os.path.join(self.video_folder, '%(title)s.%(ext)s'),
-            'ffmpeg_location': 'C:/ffmpeg/ffmpeg-7.0.1-essentials_build/bin/ffmpeg.exe'  # Chemin absolu vers ffmpeg
+            'ffmpeg_location': 'C:/ffmpeg/ffmpeg-7.0.1-essentials_build/bin/ffmpeg.exe'
         }
 
     def download(self, url, platform='YouTube', quality='best'):
@@ -83,7 +83,7 @@ class Converter:
             stream = ffmpeg.output(stream, output_file, vcodec='libx264', acodec='aac')
             ffmpeg.run(stream)
             return True
-        except ffmpeg.Error as e:  # Utilisez la bonne exception du module ffmpeg-python
+        except ffmpeg.Error as e: 
             logger.error(f"An error occurred during conversion: {str(e)}", exc_info=True)
             return False
         except Exception as e:
@@ -112,11 +112,11 @@ class YouTube(BasePlatform):
         self.ydl_opts = {
             'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
             'outtmpl': os.path.join(self.video_folder, '%(title)s.%(ext)s'),
-            'ffmpeg_location': 'C:/ffmpeg/ffmpeg-7.0.1-essentials_build/bin/ffmpeg.exe'  # Chemin absolu vers ffmpeg
+            'ffmpeg_location': 'C:/ffmpeg/ffmpeg-7.0.1-essentials_build/bin/ffmpeg.exe' 
         }
 
     def get_video_info(self, url):
-        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:s
             return ydl.extract_info(url, download=False)
 
     def download(self, url, quality='best'):
