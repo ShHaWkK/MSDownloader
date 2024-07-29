@@ -116,7 +116,7 @@ class YouTube(BasePlatform):
         }
 
     def get_video_info(self, url):
-        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:s
+        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             return ydl.extract_info(url, download=False)
 
     def download(self, url, quality='best'):
